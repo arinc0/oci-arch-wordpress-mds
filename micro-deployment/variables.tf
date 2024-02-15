@@ -4,9 +4,9 @@
 variable "tenancy_ocid" {}
 variable "compartment_ocid" {}
 variable "region" {}
-#variable "fingerprint" {}
-#variable "private_key_path" {}
-#variable "user_ocid" {}
+variable "fingerprint" {}
+variable "private_key_path" {}
+variable "user_ocid" {}
 variable "availability_domain_name" {
   default = null
 }
@@ -26,7 +26,7 @@ variable "vcn_cidr" {
 ## Instance
 
 variable "instance_shape" {
-  default = "VM.Standard.E3.Flex"
+  default = "VM.Standard.E2.1"
 }
 variable "instance_ocpus" {
   default = 1
@@ -36,7 +36,7 @@ variable "instance_shape_config_memory_in_gbs" {
 }
 
 variable "label_prefix" {
-  default     = ""
+  default = ""
 }
 
 variable "instance_os" {
@@ -60,12 +60,12 @@ variable "public_ssh_key" {
 
 variable "wp_db_user" {
   description = "The username that WordPress uses to connect to the MySQL database."
-  default     = "wp"  
+  default     = "wp"
 }
 
 variable "wp_schema" {
   description = "WordPress MySQL Schema"
-  default     = "wordpress"  
+  default     = "wordpress"
 }
 
 # WordPress
@@ -73,7 +73,7 @@ variable "wp_schema" {
 
 variable "wp_admin_user" {
   description = "The username for the WordPress administrator."
-  default     = "admin"  
+  default     = "admin"
 }
 
 variable "wp_admin_password" {

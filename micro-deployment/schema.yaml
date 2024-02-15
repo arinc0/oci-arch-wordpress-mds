@@ -1,14 +1,14 @@
 # Copyright (c) 2021 Oracle and/or its affiliates. All rights reserved.
 # Licensed under the Universal Permissive License v 1.0 as shown at http://oss.oracle.com/licenses/upl.
 # 
-title: "Deploy a containerized WordPress instance on OCI"
-description: "Deploy containerized WordPress & MySQL on OCI using a single compute instance. "
+title: "Deploy a WordPress instance on OCI"
+description: ${Messages.solutionsHub.solutions.wordpress.longDescription()}
 schemaVersion: 1.1.0
 version: "20190304"
 locale: "en"
 
 variableGroups:
-- title: General Configuration
+- title: ${Messages.solutionsHub.generalConfig()}
   visible: false
   variables:
   - tenancy_ocid
@@ -17,14 +17,14 @@ variableGroups:
   - linux_os_version
   - label_prefix
 
-- title: WordPress Configuration
+- title: ${Messages.solutionsHub.solutions.wordpress.variableGroups.wordPressConfigurationTitle()}
   visible: true  
   variables:
     - wp_admin_user
     - wp_admin_password
     - show_advanced
 
-- title: MySQL Configuration
+- title: ${Messages.solutionsHub.solutions.wordpress.variableGroups.mySqlConfigurationTitle()}
   visible: 
       and:
         - show_advanced  
@@ -34,7 +34,7 @@ variableGroups:
 
 
 
-- title: Instance Configuration
+- title: ${Messages.solutionsHub.solutions.wordpress.variableGroups.instanceConfigurationTitle()}
   visible: 
       and:
         - show_advanced
@@ -48,7 +48,7 @@ variableGroups:
     - public_ssh_key
 
 
-- title: Network Configuration
+- title: ${Messages.solutionsHub.solutions.wordpress.variableGroups.networkConfigurationTitle()}
   visible: 
       and:
         - show_advanced
@@ -57,26 +57,26 @@ variableGroups:
      - vcn_cidr
 
 outputGroups:
-- title: Service Endpoints
+- title: ${Messages.solutionsHub.solutions.wordpress.outputGroups.serviceEndpointsTitle()}
   outputs:
     - wordpress_public_ip
     - wordpress_admin_url
-- title: Generated Passwords
+- title: ${Messages.solutionsHub.solutions.wordpress.outputGroups.generatedPasswordsTitle()}
   outputs:
     - generated_ssh_private_key
 
 outputs:
   wordpress_public_ip:
     type: link
-    title: Your WordPress website
-    description: Open WordPress website
+    title: ${Messages.solutionsHub.solutions.wordpress.outputs.wordpressPublicIpTitle()}
+    description: ${Messages.solutionsHub.solutions.wordpress.outputs.wordpressPublicIpDescription()}
   wordpress_admin_url:
     type: link
-    title: WordPress Login
-    description: Login to your WordPress installation.
+    title: ${Messages.solutionsHub.solutions.wordpress.outputs.wordpressAdminUrlTitle()}
+    description: ${Messages.solutionsHub.solutions.wordpress.outputs.wordpressAdminUrlDescription()}
   generated_ssh_private_key:
-    title: "Generated SSH Private Key"
-    description: "Generated SSH Private Key"
+    title: ${Messages.solutionsHub.solutions.wordpress.outputs.generatedSshPrivateKeyTitle()}
+    description: ${Messages.solutionsHub.solutions.wordpress.outputs.generatedSshPrivateKeyDescription()}
     type: copyableString
     visible: true
 
@@ -86,9 +86,9 @@ variables:
 
   show_advanced:
     type: boolean
-    title: "Show advanced options?"
-    description: "Shows advanced options."
-    visible: true
+    title:  ${Messages.solutionsHub.solutions.wordpress.variables.showAdvancedTitle()}
+    description:  ${Messages.solutionsHub.solutions.wordpress.variables.showAdvancedDescription()}
+    visible: false
     default: false
 
 # MySQL
@@ -96,8 +96,8 @@ variables:
   wp_db_user:
     type: string
     required: false
-    title: "WordPress database username"
-    description: "The username that WordPress uses to connect to the MySQL database."
+    title: ${Messages.solutionsHub.solutions.wordpress.variables.wpDbUserTitle()}
+    description: ${Messages.solutionsHub.solutions.wordpress.variables.wpDbUserDescription()}
     minLength: 2
     maxLength: 14
     pattern: "^[a-zA-Z][a-zA-Z0-9]+$"
@@ -108,8 +108,8 @@ variables:
   wp_schema:
     type: string
     required: false
-    title: "MySQL schema to be used by WordPress"
-    description: "The MySQL Schema/Database for WordPress."
+    title: ${Messages.solutionsHub.solutions.wordpress.variables.wpSchemaTitle()}
+    description: ${Messages.solutionsHub.solutions.wordpress.variables.wpSchemaDescription()}
     visible: 
       and:
         - show_advanced
@@ -117,8 +117,8 @@ variables:
   wp_admin_user:
     type: string
     required: true
-    title: "WordPress admin username"
-    description: "The username for the WordPress administrator."
+    title: ${Messages.solutionsHub.solutions.wordpress.variables.wpAdminUserTitle()}
+    description: ${Messages.solutionsHub.solutions.wordpress.variables.wpAdminUserDescription()}
     minLength: 2
     maxLength: 14
     pattern: "^[a-zA-Z][a-zA-Z0-9]+$"
@@ -127,10 +127,10 @@ variables:
   wp_admin_password:
     type: password
     required: true
-    title: "WordPress admin password"
-    description: "The password should be more than 8 characters and must include an uppercase, lowercase, numeral and one of the following special characters : !@#%^*_+-:?.,[]{}"
+    title: ${Messages.solutionsHub.solutions.wordpress.variables.wpAdminPasswordTitle()}
+    description: ${Messages.solutionsHub.solutions.wordpress.variables.wpAdminPasswordDescription()}
     #pattern: "^(?=[a-zA-Z0-9!@#%^*_+\-:?.,\[\]\{\}]{8,32}$)(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[0-9]).*"
-    pattern: "^(?=.*[!@#%^*_+\\-:?.,\\[\\]\\{\\}])(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,32}$"
+    pattern: "^(?=.*[!@#%^*_+\\-:?.,\\[\\]\\{\\}])(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?!.*[$\\(\\)]).{8,32}$"
   
 # Network
   vcn:
@@ -139,8 +139,8 @@ variables:
       and:
         - show_advanced
     required: true
-    title: "VCN name"
-    description: "Type VCN name where your WordPress will be deployed."
+    title: ${Messages.solutionsHub.solutions.wordpress.variables.vcnTitle()}
+    description: ${Messages.solutionsHub.solutions.wordpress.variables.vcnDescription()}
 
   vcn_cidr:
     type: string
@@ -149,8 +149,8 @@ variables:
         - show_advanced
     required: false
     pattern: "^(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]).(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]).(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]).(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\\/(3[0-2]|[1-2]?[0-9])$"
-    title: "VCN CIDR"
-    description: "Choose VCN CIDR for your WordPress deployment."
+    title: ${Messages.solutionsHub.solutions.wordpress.variables.vcnCidrTitle()}
+    description: ${Messages.solutionsHub.solutions.wordpress.variables.vcnCidrDescription()}
 
 # Instance 
   compartment_ocid:
@@ -159,8 +159,8 @@ variables:
     visible: 
       and:
         - show_advanced
-    title: "Compartment"
-    description: "Compartment where your WordPress will be deployed."
+    title: ${Messages.solutionsHub.solutions.wordpress.variables.compartmentOcidTitle()}
+    description: ${Messages.solutionsHub.solutions.wordpress.variables.compartmentOcidDescription()}
 
   availability_domain_name:
     type: oci:identity:availabilitydomain:name
@@ -168,8 +168,8 @@ variables:
     visible: 
       and:
         - show_advanced
-    title: "Availability Domain to be chosen"
-    description: "Choose Availability Domain where your WordPress will be deployed."
+    title: ${Messages.solutionsHub.solutions.wordpress.variables.availabilityDomainNameTitle()}
+    description: ${Messages.solutionsHub.solutions.wordpress.variables.availabilityDomainNameDescription()}
     dependsOn:
       regionName: ${region}
       compartmentId: ${compartment_ocid}
@@ -180,9 +180,9 @@ variables:
     visible: 
       and:
         - show_advanced
-    title: "Wordpress node shape"
-    description: "Choose Instance Shape for WordPress host."
-    default: "VM.Standard.E3.Flex"
+    title: ${Messages.solutionsHub.solutions.wordpress.variables.instanceShapeTitle()}
+    description: ${Messages.solutionsHub.solutions.wordpress.variables.instanceShapeDescription()}
+    default: "VM.Standard.E2.1"
     dependsOn:
       compartmentId: ${compartment_ocid}
   
@@ -190,8 +190,8 @@ variables:
     type: integer
     minimum: 1
     maximum: 64
-    title: "Number of OCPUs"
-    description: "You can customize the number of OCPUs to a flexible shape."
+    title: ${Messages.solutionsHub.solutions.wordpress.variables.instanceOcpusTitle()}
+    description: ${Messages.solutionsHub.solutions.wordpress.variables.instanceOcpusDescription()}
     visible:
       and:
         - show_advanced
@@ -202,16 +202,13 @@ variables:
           - eq:
             - instance_shape 
             - "VM.Standard.E4.Flex"
-          - eq:
-            - instance_shape 
-            - "VM.Standard.A1.Flex"
 
   instance_shape_config_memory_in_gbs:
     type: integer
     minimum: 1
     maximum: 1024
-    title: "Amount of memory (GB)"
-    description: "You can customize the amount of memory allocated to a flexible shape."
+    title: ${Messages.solutionsHub.solutions.wordpress.variables.instanceShapeConfigMemoryInGbsTitle()}
+    description: ${Messages.solutionsHub.solutions.wordpress.variables.instanceShapeConfigMemoryInGbsDescription()}
     visible:
       and:
         - show_advanced
@@ -222,9 +219,6 @@ variables:
           - eq:
             - instance_shape 
             - "VM.Standard.E4.Flex"
-          - eq:
-            - instance_shape 
-            - "VM.Standard.A1.Flex"            
 
   instance_os:
     type: enum
@@ -232,8 +226,8 @@ variables:
     visible: 
       and:
         - show_advanced
-    title: "Instance OS"
-    description: "An Operating System that determines the operating system for WordPress host."
+    title: ${Messages.solutionsHub.solutions.wordpress.variables.instanceOsTitle()}
+    description: ${Messages.solutionsHub.solutions.wordpress.variables.instanceOsDescription()}
     default: "Oracle Linux"
     enum:
       - "Oracle Linux"
@@ -244,8 +238,8 @@ variables:
     visible: 
       and:
         - show_advanced
-    title: "Instance OS version"
-    description: "An Operating System version that determines the operating system version for WordPress host."
+    title: ${Messages.solutionsHub.solutions.wordpress.variables.linuxOsVersionTitle()}
+    description: ${Messages.solutionsHub.solutions.wordpress.variables.linuxOsVersionDescription()}
     default: "7.8"
     enum:
       - "7.8"
@@ -254,14 +248,14 @@ variables:
     type: string
     required: false
     visible: false
-    title: "WordPress Hostname Prefix"
-    description: "Type WordPress Hostname Prefix."
+    title: ${Messages.solutionsHub.solutions.wordpress.variables.labelPrefixTitle()}
+    description: ${Messages.solutionsHub.solutions.wordpress.variables.labelPrefixDescription()}
 
   
 
   generate_public_ssh_key:
     type: boolean
-    title: "Auto generate public ssh key?"
+    title: ${Messages.solutionsHub.solutions.wordpress.variables.generatePublicSshKeyTitle()}
     required: true
     visible: #($show_advanced  == ""Yes"")
       and:
@@ -269,10 +263,10 @@ variables:
 
   public_ssh_key:
     type: oci:core:ssh:publickey
-    title: "Import your own SSH public key"
+    title: ${Messages.solutionsHub.solutions.wordpress.variables.publicSshKeyTitle()}
     additionalProps:
       allowMultiple: true
-    description: "In order to access your private nodes with a public SSH key you will need to set up a bastion host (a.k.a. jump box). If using public nodes, bastion is not needed. Left blank to not import keys."
+    description: ${Messages.solutionsHub.solutions.wordpress.variables.publicSshKeyDescription()}
     required: false
     pattern: "((^(ssh-rsa AAAAB3NzaC1yc2|ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNT|ecdsa-sha2-nistp384 AAAAE2VjZHNhLXNoYTItbmlzdHAzODQAAAAIbmlzdHAzOD|ecdsa-sha2-nistp521 AAAAE2VjZHNhLXNoYTItbmlzdHA1MjEAAAAIbmlzdHA1Mj|ssh-ed25519 AAAAC3NzaC1lZDI1NTE5|ssh-dss AAAAB3NzaC1kc3)[0-9A-Za-z+\/]+[=]{0,3})( [^,]*)?)(,((ssh-rsa AAAAB3NzaC1yc2|ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNT|ecdsa-sha2-nistp384 AAAAE2VjZHNhLXNoYTItbmlzdHAzODQAAAAIbmlzdHAzOD|ecdsa-sha2-nistp521 AAAAE2VjZHNhLXNoYTItbmlzdHA1MjEAAAAIbmlzdHA1Mj|ssh-ed25519 AAAAC3NzaC1lZDI1NTE5|ssh-dss AAAAB3NzaC1kc3)[0-9A-Za-z+\/]+[=]{0,3})( [^,]*)?)*$"
     visible: 

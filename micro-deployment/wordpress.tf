@@ -1,20 +1,6 @@
 # Copyright (c) 2021 Oracle and/or its affiliates. All rights reserved.
 # Licensed under the Universal Permissive License v 1.0 as shown at http://oss.oracle.com/licenses/upl.
-# 
-data "template_file" "wordpress-docker-compose" {
-  template = file("${path.module}/scripts/wordpress.yaml")
-
-  vars = {
-    public_key_openssh  = tls_private_key.public_private_key_pair.public_key_openssh,
-    mysql_root_password = random_password.mysql_root_password.result,
-    wp_schema           = var.wp_schema,
-    wp_db_user          = var.wp_db_user,
-    wp_db_password      = random_password.wp_db_password.result,
-    wp_site_url         = oci_core_public_ip.WordPress_public_ip.ip_address,
-    wp_admin_user       = var.wp_admin_user,
-    wp_admin_password   = var.wp_admin_password
-  }
-}
+#
 
 
 resource "oci_core_instance" "WordPress" {
@@ -74,8 +60,37 @@ resource "null_resource" "WordPress_provisioner" {
   depends_on = [oci_core_instance.WordPress, oci_core_public_ip.WordPress_public_ip]
 
   provisioner "file" {
-    content     = data.template_file.wordpress-docker-compose.rendered
+    content = templatefile("${path.module}/scripts/wordpress.yaml", {
+      public_key_openssh  = tls_private_key.public_private_key_pair.public_key_openssh,
+      mysql_root_password = random_password.mysql_root_password.result,
+      wp_schema           = var.wp_schema,
+      wp_db_user          = var.wp_db_user,
+      wp_db_password      = random_password.wp_db_password.result,
+      wp_site_url         = oci_core_public_ip.WordPress_public_ip.ip_address,
+      wp_admin_user       = var.wp_admin_user,
+      wp_admin_password   = var.wp_admin_password
+    })
     destination = "/home/opc/wordpress.yaml"
+
+    connection {
+      type        = "ssh"
+      host        = oci_core_public_ip.WordPress_public_ip.ip_address
+      agent       = false
+      timeout     = "5m"
+      user        = "opc"
+      private_key = tls_private_key.public_private_key_pair.private_key_pem
+
+    }
+  }
+
+  provisioner "file" {
+    content = templatefile("${path.module}/scripts/readme.template", {
+      mysql_root_password = random_password.mysql_root_password.result,
+      wp_schema           = var.wp_schema,
+      wp_db_user          = var.wp_db_user,
+      wp_db_password      = random_password.wp_db_password.result
+    })
+    destination = "/home/opc/README.md"
 
     connection {
       type        = "ssh"
@@ -121,7 +136,7 @@ resource "random_password" "wp_db_password" {
 
 locals {
   availability_domain_name   = var.availability_domain_name != null ? var.availability_domain_name : data.oci_identity_availability_domains.ADs.availability_domains[0].name
-  instance_shape             = var.instance_shape
-  compute_flexible_shapes    = ["VM.Standard.E3.Flex","VM.Standard.E4.Flex","VM.Standard.A1.Flex"]
-  is_flexible_instance_shape = contains(local.compute_flexible_shapes, local.instance_shape)
+  instance_shape             = var.instance_shape != null ? var.instance_shape : data.oci_core_shapes.matched_shapes.shapes[0].name
+  flexible_shape_regex       = "VM.Standard.E[3-9].Flex"
+  is_flexible_instance_shape = length(regexall("VM.Standard.E[0-9].Flex", local.instance_shape)) > 0
 }

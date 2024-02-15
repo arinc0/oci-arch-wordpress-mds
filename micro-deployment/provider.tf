@@ -13,13 +13,13 @@ terraform {
     }
 
   }
-  required_version = ">= 0.14"
+  required_version = ">= 0.14.11"
 }
 
 provider "oci" {
-  tenancy_ocid = var.tenancy_ocid
-  region = var.region
-#  user_ocid = var.user_ocid
-#  fingerprint = var.fingerprint
-#  private_key_path = var.private_key_path
+  tenancy_ocid     = var.tenancy_ocid
+  user_ocid        = var.user_ocid
+  private_key_path = var.private_key_path
+  fingerprint      = var.fingerprint
+  region           = var.region
 }
